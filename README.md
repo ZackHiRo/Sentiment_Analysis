@@ -35,10 +35,10 @@ plt.show()
 ![Top Words](src/top20_text.png)
 
 ### Text Length Distribution By Sentiment
-![Top Words](src/text_length_by_sentiment.png)
+![Text Length Distribution By Sentiment](src/text_length_by_sentiment.png)
 
 ### Distribution of text length for text
-![Top Words](src/length dist.png)
+![Distribution for text](src/length%20dist.png)
 
 
 ---
