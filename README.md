@@ -29,7 +29,17 @@ sns.countplot(x=df['sentiment'])
 plt.title("Sentiment Distribution")
 plt.show()
 ```
-![Sentiment Distribution](src/distribution.png)
+![Sentiment Distribution](src/distribution2.png)
+
+### Top 20 Most Frequent Words
+![Top Words](src/top20_text.png)
+
+### Text Length Distribution By Sentiment
+![Top Words](src/text_length_by_sentiment.png)
+
+### Distribution of text length for text
+![Top Words](src/length dist.png)
+
 
 ---
 
