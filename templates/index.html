@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">
+                            <i class="bi bi-emoji-smile me-2"></i>
+                            Sentiment Analysis
+                        </h1>
+                        
+                        <div class="alert alert-info mb-4" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Enter your text below to analyze its sentiment. Our AI model will determine if the text expresses a positive or negative sentiment.
+                        </div>
+
+                        <form id="sentimentForm" class="mb-4">
+                            <div class="mb-3">
+                                <label for="textInput" class="form-label">Text to Analyze</label>
+                                <textarea 
+                                    class="form-control" 
+                                    id="textInput" 
+                                    rows="4" 
+                                    placeholder="Enter your text here..."
+                                    required></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                                    Analyze Sentiment
+                                </button>
+                            </div>
+                        </form>
+
+                        <div id="result" class="card d-none">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">Analysis Result</h5>
+                                <div class="result-content">
+                                    <i class="bi bi-emoji-smile-fill result-icon fs-1 mb-3"></i>
+                                    <p class="result-text fs-4 mb-0"></p>
+                                    <p class="confidence-text text-muted mt-2"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <span class="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('sentimentForm');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const spinner = analyzeBtn.querySelector('.spinner-border');
+            const resultCard = document.getElementById('result');
+            const resultIcon = resultCard.querySelector('.result-icon');
+            const resultText = resultCard.querySelector('.result-text');
+            const confidenceText = resultCard.querySelector('.confidence-text');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = errorAlert.querySelector('.error-message');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Reset previous results
+                resultCard.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+                
+                // Show loading state
+                analyzeBtn.disabled = true;
+                spinner.classList.remove('d-none');
+                
+                try {
+                    const text = document.getElementById('textInput').value.trim();
+                    
+                    if (!text) {
+                        throw new Error('Please enter some text to analyze.');
+                    }
+                    
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ text }),
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to analyze sentiment.');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Update result display
+                    resultIcon.className = `bi ${result.sentiment === 'positive' ? 'bi-emoji-smile-fill' : 'bi-emoji-frown-fill'} result-icon fs-1 mb-3`;
+                    resultText.textContent = `${result.sentiment.charAt(0).toUpperCase() + result.sentiment.slice(1)} Sentiment`;
+                    confidenceText.textContent = `Confidence: ${Math.round(result.confidence * 100)}%`;
+                    resultCard.classList.remove('d-none');
+                    
+                } catch (error) {
+                    errorMessage.textContent = error.message;
+                    errorAlert.classList.remove('d-none');
+                } finally {
+                    // Reset loading state
+                    analyzeBtn.disabled = false;
+                    spinner.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
