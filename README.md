@@ -126,7 +126,7 @@ docker run -p 5000:5000 sentiment-api
 This project is licensed under the **MIT License**.
 
 ## 👨‍💻 Contributors
-- **Your Name** - [GitHub](https://github.com/ZackHiRo)
+- **Zack** - [GitHub](https://github.com/ZackHiRo)
 
 ---
 
